@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BaLapak - Lapak Lokal Urang Banua</title>
+    <meta name="description" content="Platform jual beli barang bekas dan sewa hunian di Kalimantan Selatan">
+    <link rel="icon" type="image/png" href="logo&fav.png">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom styles for BaLapak - Light Minimalist Theme */
+        :root {
+            --color-primary: #3B82F6;
+            /* Blue 30% */
+            --color-text: #1F2937;
+            /* Black 10% */
+            --color-bg: #FFFFFF;
+            /* White 60% */
+            --color-bg-secondary: #F9FAFB;
+            --color-border: #E5E7EB;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--color-bg-secondary);
+            color: var(--color-text);
+        }
+
+        .navbar-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        /* Masonry Grid Layout */
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 24px;
+        }
+
+        @media (min-width: 640px) {
+            .masonry-grid {
+                column-count: 2;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .masonry-grid {
+                column-count: 4;
+            }
+        }
+
+        .product-card {
+            background-color: var(--color-bg);
+            border-radius: 12px;
+            /* Rounded-xl */
+            margin-bottom: 24px;
+            break-inside: avoid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            /* Shadow increase */
+        }
+
+        .product-card:hover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.02);
+            /* Slight overlay */
+            pointer-events: none;
+        }
+
+        .product-card-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .product-card-content {
+            padding: 16px;
+        }
+
+        .product-card-placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: var(--color-bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #D1D5DB;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563EB;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--color-border);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: var(--color-bg-secondary);
+        }
+
+        .filter-btn.active {
+            background-color: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background-color: var(--color-bg-secondary);
+            color: #6B7280;
+        }
+
+        .price-tag {
+            color: var(--color-text);
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .image-gallery {
+            margin-bottom: 24px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            margin-bottom: 12px;
+        }
+
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 2px solid var(--color-border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .thumbnail:hover {
+            border-color: var(--color-primary);
+            opacity: 0.8;
+        }
+
+        .thumbnail.active {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            color: var(--color-text);
+            background-color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: #9CA3AF;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sticky Navbar -->
+    <nav class="navbar-sticky">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="logo&fav.png" alt="BaLapak Logo" class="h-12 w-auto">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">BaLapak</h1>
+                        <p class="text-sm text-gray-600">Lapak Lokal Urang Banua</p>
+                    </div>
+                </div>
+                <div id="categoryFilterNav" class="hidden md:flex gap-2">
+                    <!-- Filters will be injected here -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- List View Container -->
+        <div id="listView" class="fade-in">
+            <!-- Category Filters (Mobile) -->
+            <div class="md:hidden mb-6">
+                <div id="categoryFilterMobile" class="flex flex-wrap gap-2">
+                    <!-- Filters will be injected here -->
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="mb-6">
+                <input type="text" id="searchInput" class="search-input"
+                    placeholder="🔍 Cari produk, lokasi, atau kategori..." oninput="handleSearch()">
+            </div>
+
+            <!-- Products Grid -->
+            <div id="productsGrid" class="masonry-grid">
+                <!-- Product cards will be injected here -->
+            </div>
+        </div>
+
+        <!-- Detail View Container -->
+        <div id="detailView" class="fade-in hidden">
+            <!-- Product detail will be injected here -->
+        </div>
+    </main>
+
+    <script>
+        // ========== PRODUCT DATA ==========
+        const PRODUCTS = [
+            // Barang Bekas - Kabupaten Balangan
+            {
+                id: "bb-motor-balangan-01",
+                title: "Motor Honda Beat 2018 - Mulus Siap Pakai",
+                price: "Rp 7.500.000",
+                category: "barang-bekas",
+                subcategory: "Motor",
+                location: "Kabupaten Balangan",
+                description: "Motor Honda Beat tahun 2018, warna hitam, kondisi mulus terawat. Surat lengkap STNK BPKB. Mesin halus, tidak ada PR. Pajak hidup. Cocok untuk harian.",
+                whatsapp: "6285123456789",
+                images: [
+                    "/home/asyjim/.gemini/antigravity/brain/9f21aac4-5ed3-4dae-a48d-5fe345994e3d/motor_demo_1_1768368969708.png",
+                    "/home/asyjim/.gemini/antigravity/brain/9f21aac4-5ed3-4dae-a48d-5fe345994e3d/motor_demo_2_1768369030206.png",
+                    "/home/asyjim/.gemini/antigravity/brain/9f21aac4-5ed3-4dae-a48d-5fe345994e3d/motor_demo_3_1768369052673.png"
+                ]
+            },
+            {
+                id: "bb-kulkas-balangan-02",
+                title: "Kulkas 2 Pintu Samsung 300L",
+                price: "Rp 1.800.000",
+                category: "barang-bekas",
+                subcategory: "Elektronik",
+                location: "Kabupaten Balangan",
+                description: "Kulkas Samsung 2 pintu kapasitas 300 liter. Kondisi normal dingin. Baru pakai 3 tahun. Masih bagus dan berfungsi dengan baik.",
+                whatsapp: "6285123456790",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Banjar
+            {
+                id: "bb-laptop-banjar-01",
+                title: "Laptop ASUS VivoBook Ryzen 5 RAM 8GB",
+                price: "Rp 4.200.000",
+                category: "barang-bekas",
+                subcategory: "Gadget",
+                location: "Kabupaten Banjar",
+                description: "Laptop ASUS VivoBook Ryzen 5 3500U, RAM 8GB, SSD 256GB, VGA Radeon. Kondisi 90% mulus. Cocok untuk kerja dan kuliah. Baterai awet 4-5 jam.",
+                whatsapp: "6285234567891",
+                images: []
+            },
+            {
+                id: "bb-meja-banjar-02",
+                title: "Meja Belajar Kayu Jati Solid",
+                price: "Rp 850.000",
+                category: "barang-bekas",
+                subcategory: "Furniture",
+                location: "Kabupaten Banjar",
+                description: "Meja belajar kayu jati solid ukuran 120x60 cm. Kondisi bagus, kokoh. Ada laci untuk penyimpanan. Cocok untuk ruang belajar atau kantor.",
+                whatsapp: "6285234567892",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Barito Kuala
+            {
+                id: "bb-ac-barito-01",
+                title: "AC LG 1 PK Low Watt - Dingin Mantap",
+                price: "Rp 1.500.000",
+                category: "barang-bekas",
+                subcategory: "Elektronik",
+                location: "Kabupaten Barito Kuala",
+                description: "AC LG 1 PK low watt. Dingin normal tidak ada masalah. Sudah termasuk bongkar pasang. Hemat listrik cocok untuk kamar tidur.",
+                whatsapp: "6285345678901",
+                images: []
+            },
+            {
+                id: "bb-hp-barito-02",
+                title: "HP Samsung A52 8/128 GB Fullset",
+                price: "Rp 2.900.000",
+                category: "barang-bekas",
+                subcategory: "Gadget",
+                location: "Kabupaten Barito Kuala",
+                description: "Samsung Galaxy A52 RAM 8GB ROM 128GB. Kondisi mulus 95% seperti baru. Fullset dus charger. Baterai sehat. Tidak ada minus.",
+                whatsapp: "6285345678902",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Hulu Sungai Selatan
+            {
+                id: "bb-sepeda-hss-01",
+                title: "Sepeda MTB Polygon 27.5 inch",
+                price: "Rp 2.100.000",
+                category: "barang-bekas",
+                subcategory: "Olahraga",
+                location: "Kabupaten Hulu Sungai Selatan",
+                description: "Sepeda gunung Polygon ukuran 27.5 inch. Kondisi normal siap pakai. Sudah upgrade fork dan gear Shimano. Cocok untuk adventure.",
+                whatsapp: "6285456789012",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Hulu Sungai Tengah
+            {
+                id: "bb-tv-hst-01",
+                title: "TV LED Samsung 43 inch Smart TV",
+                price: "Rp 2.500.000",
+                category: "barang-bekas",
+                subcategory: "Elektronik",
+                location: "Kabupaten Hulu Sungai Tengah",
+                description: "TV LED Samsung 43 inch Smart TV. Bisa Netflix, YouTube. Kondisi normal tidak ada garis. Remote lengkap. Jernih gambarnya.",
+                whatsapp: "6285567890123",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Hulu Sungai Utara
+            {
+                id: "bb-sofa-hsu-01",
+                title: "Sofa L Minimalis Cream - 5 Dudukan",
+                price: "Rp 3.200.000",
+                category: "barang-bekas",
+                subcategory: "Furniture",
+                location: "Kabupaten Hulu Sungai Utara",
+                description: "Sofa L minimalis warna cream untuk 5 dudukan. Kondisi bersih terawat. Busa masih empuk. Cocok untuk ruang tamu modern.",
+                whatsapp: "6285678901234",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Kotabaru
+            {
+                id: "bb-mesin-cuci-kotabaru-01",
+                title: "Mesin Cuci Sharp 2 Tabung 8 Kg",
+                price: "Rp 1.100.000",
+                category: "barang-bekas",
+                subcategory: "Elektronik",
+                location: "Kabupaten Kotabaru",
+                description: "Mesin cuci Sharp 2 tabung kapasitas 8 kg. Kondisi normal berfungsi baik. Cuci kering lancar. Hemat air dan listrik.",
+                whatsapp: "6285789012345",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Tabalong
+            {
+                id: "bb-kompor-tabalong-01",
+                title: "Kompor Gas Rinnai 2 Tungku + Tabung",
+                price: "Rp 650.000",
+                category: "barang-bekas",
+                subcategory: "Dapur",
+                location: "Kabupaten Tabalong",
+                description: "Kompor gas Rinnai 2 tungku masih bagus. Api biru merata. Bonus tabung gas 3kg. Kondisi bersih siap pakai.",
+                whatsapp: "6285890123456",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Tanah Bumbu
+            {
+                id: "bb-playstation-tbu-01",
+                title: "PlayStation 4 Slim 500GB + 2 Stik",
+                price: "Rp 2.800.000",
+                category: "barang-bekas",
+                subcategory: "Gadget",
+                location: "Kabupaten Tanah Bumbu",
+                description: "PS4 Slim 500GB CFW. 2 stik original. Bonus 20 game. Kondisi normal lancar. Lengkap kabel HDMI dan power.",
+                whatsapp: "6285901234567",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Tanah Laut
+            {
+                id: "bb-kasur-tlaut-01",
+                title: "Kasur Spring Bed King Koil 160x200",
+                price: "Rp 2.500.000",
+                category: "barang-bekas",
+                subcategory: "Furniture",
+                location: "Kabupaten Tanah Laut",
+                description: "Kasur spring bed King Koil ukuran 160x200 cm. Kondisi masih bagus empuk. Tidak ada yang kempes. Cocok untuk kamar utama.",
+                whatsapp: "6281234567890",
+                images: []
+            },
+
+            // Barang Bekas - Kabupaten Tapin
+            {
+                id: "bb-printer-tapin-01",
+                title: "Printer Canon Pixma G2010 Infus",
+                price: "Rp 1.300.000",
+                category: "barang-bekas",
+                subcategory: "Elektronik",
+                location: "Kabupaten Tapin",
+                description: "Printer Canon G2010 sistem infus. Print scan copy. Kondisi normal lancar. Hemat tinta. Cocok untuk usaha fotocopy atau rumahan.",
+                whatsapp: "6281234567891",
+                images: []
+            },
+
+            // Sewa Hunian - Banjarmasin
+            {
+                id: "sh-kost-bjm-01",
+                title: "Kost Putri AC + Wifi - Dekat UNLAM",
+                price: "Rp 800.000/bulan",
+                category: "sewa-hunian",
+                subcategory: "Kost",
+                location: "Banjarmasin",
+                description: "Kost putri bersih dan aman. Fasilitas: AC, WiFi, kamar mandi dalam, kasur, lemari. Lokasi strategis dekat kampus UNLAM dan pusat kota. Listrik token. Dapur bersama.",
+                whatsapp: "6282123456789",
+                images: []
+            },
+            {
+                id: "sh-kost-bjm-02",
+                title: "Kost Putra Eksklusif - Full Furnished",
+                price: "Rp 1.200.000/bulan",
+                category: "sewa-hunian",
+                subcategory: "Kost",
+                location: "Banjarmasin",
+                description: "Kost putra eksklusif full furnished. Fasilitas lengkap: AC, WiFi unlimited, TV, kamar mandi dalam, water heater, spring bed, meja belajar. Area parkir luas. CCTV 24 jam.",
+                whatsapp: "6282123456790",
+                images: []
+            },
+            {
+                id: "sh-rumah-bjm-01",
+                title: "Rumah 2 Kamar Tidur - Komplex Asri",
+                price: "Rp 15.000.000/tahun",
+                category: "sewa-hunian",
+                subcategory: "Rumah",
+                location: "Banjarmasin",
+                description: "Rumah minimalis 2 kamar tidur di komplek perumahan asri. Luas tanah 6x12 m. Listrik 1300 watt. Air PDAM. Carport 1 mobil. Dekat sekolah dan pasar.",
+                whatsapp: "6282234567891",
+                images: []
+            },
+            {
+                id: "sh-kontrakan-bjm-01",
+                title: "Kontrakan Keluarga 3 Kamar - Tepi Jalan",
+                price: "Rp 20.000.000/tahun",
+                category: "sewa-hunian",
+                subcategory: "Rumah",
+                location: "Banjarmasin",
+                description: "Kontrakan untuk keluarga 3 kamar tidur, 2 kamar mandi. Lokasi strategis tepi jalan raya. Listrik 2200 watt. Sumur bor + PDAM. Ruang tamu luas. Cocok untuk usaha juga.",
+                whatsapp: "6282234567892",
+                images: []
+            },
+
+            // Sewa Hunian - Banjarbaru
+            {
+                id: "sh-kost-bbaru-01",
+                title: "Kost Campur AC - Area Kampus ULM",
+                price: "Rp 700.000/bulan",
+                category: "sewa-hunian",
+                subcategory: "Kost",
+                location: "Banjarbaru",
+                description: "Kost campur nyaman dekat kampus ULM Banjarbaru. Fasilitas: AC, WiFi, kasur, lemari. Kamar mandi luar. Dapur umum. Parkir motor gratis. Lingkungan aman dan tenang.",
+                whatsapp: "6282345678901",
+                images: []
+            },
+            {
+                id: "sh-rumah-bbaru-01",
+                title: "Rumah Minimalis 2 Lantai - 3 Kamar",
+                price: "Rp 25.000.000/tahun",
+                category: "sewa-hunian",
+                subcategory: "Rumah",
+                location: "Banjarbaru",
+                description: "Rumah 2 lantai modern di Banjarbaru. 3 kamar tidur, 2 kamar mandi. Listrik 2200W. Carport 2 mobil. Taman depan. Dekat dengan plaza dan sekolah. Cocok untuk keluarga.",
+                whatsapp: "6282345678902",
+                images: []
+            },
+            {
+                id: "sh-apartemen-bbaru-01",
+                title: "Apartemen Studio Full Furnished - CBD",
+                price: "Rp 2.500.000/bulan",
+                category: "sewa-hunian",
+                subcategory: "Apartemen",
+                location: "Banjarbaru",
+                description: "Apartemen studio full furnished di pusat kota Banjarbaru. Fasilitas: AC, TV, kulkas, spring bed, kitchen set. Akses kolam renang, gym, laundry. Keamanan 24 jam. View kota.",
+                whatsapp: "6282456789012",
+                images: []
+            }
+        ];
+
+        // ========== UTILITY FUNCTIONS ==========
+
+        // Get URL parameter
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Set URL parameter without reload
+        function setUrlParameter(name, value) {
+            const url = new URL(window.location);
+            if (value) {
+                url.searchParams.set(name, value);
+            } else {
+                url.searchParams.delete(name);
+            }
+            window.history.pushState({}, '', url);
+        }
+
+        // Format WhatsApp URL
+        function getWhatsAppUrl(phone, productTitle) {
+            const message = `Halo, saya tertarik dengan produk: ${productTitle}`;
+            return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        }
+
+        // Get unique categories
+        function getCategories() {
+            const categories = ['semua', ...new Set(PRODUCTS.map(p => p.category))];
+            return categories;
+        }
+
+        // ========== RENDER FUNCTIONS ==========
+
+        // Render category filters
+        function renderCategoryFilters() {
+            const categories = getCategories();
+            const currentCategory = getUrlParameter('category') || 'semua';
+
+            const filterHTML = categories.map(cat => {
+                const label = cat === 'semua' ? 'Semua' :
+                    cat === 'barang-bekas' ? 'Barang Bekas' :
+                        'Sewa Hunian';
+                const activeClass = cat === currentCategory ? 'active' : '';
+                return `<button class="filter-btn ${activeClass}" onclick="filterByCategory('${cat}')">${label}</button>`;
+            }).join('');
+
+            document.getElementById('categoryFilterNav').innerHTML = filterHTML;
+            document.getElementById('categoryFilterMobile').innerHTML = filterHTML;
+        }
+
+        // Filter products by category
+        function filterByCategory(category) {
+            setUrlParameter('category', category === 'semua' ? null : category);
+            renderListView();
+        }
+
+        // Handle search input
+        function handleSearch() {
+            renderListView();
+        }
+
+        // Get search query
+        function getSearchQuery() {
+            const searchInput = document.getElementById('searchInput');
+            return searchInput ? searchInput.value.toLowerCase().trim() : '';
+        }
+
+        // Filter products by search query
+        function filterProductsBySearch(products, query) {
+            if (!query) return products;
+
+            return products.filter(product => {
+                const searchText = `${product.title} ${product.location} ${product.category} ${product.subcategory || ''}`.toLowerCase();
+                return searchText.includes(query);
+            });
+        }
+
+        // Render product card
+        function renderProductCard(product) {
+            const hasImage = product.images && product.images.length > 0;
+            const imageHTML = hasImage
+                ? `<img src="${product.images[0]}" alt="${product.title}" class="product-card-image">`
+                : `<div class="product-card-placeholder">📦</div>`;
+
+            return `
+                <div class="product-card" onclick="showDetail('${product.id}')">
+                    ${imageHTML}
+                    <div class="product-card-content">
+                        <h3 class="text-base font-bold mb-1 text-gray-900 leading-tight">${product.title}</h3>
+                        <p class="text-gray-500 text-xs mb-3 line-clamp-1">${product.description}</p>
+                        <div class="flex items-center justify-between mt-auto">
+                            <div class="price-tag">${product.price}</div>
+                            <span class="tag text-[10px]">${product.location}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render list view
+        function renderListView() {
+            const currentCategory = getUrlParameter('category') || 'semua';
+            const searchQuery = getSearchQuery();
+
+            let filteredProducts = currentCategory === 'semua'
+                ? PRODUCTS
+                : PRODUCTS.filter(p => p.category === currentCategory);
+
+            filteredProducts = filterProductsBySearch(filteredProducts, searchQuery);
+
+            const productsHTML = filteredProducts.length > 0
+                ? filteredProducts.map(renderProductCard).join('')
+                : '<div class="text-center py-12 text-gray-500 w-full" style="column-span: all;"><p class="text-lg">Tidak ada produk yang ditemukan</p><p class="text-sm mt-2">Coba ubah kata kunci pencarian Anda</p></div>';
+
+            document.getElementById('productsGrid').innerHTML = productsHTML;
+
+            renderCategoryFilters();
+        }
+
+        // Render detail view
+        function renderDetailView(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+
+            if (!product) {
+                document.getElementById('detailView').innerHTML = `
+                    <div class="text-center py-12">
+                        <h2 class="text-2xl font-bold mb-4">Produk tidak ditemukan</h2>
+                        <button onclick="showList()" class="btn-secondary">Kembali ke Daftar</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const imagesHTML = product.images && product.images.length > 0
+                ? `<div class="image-gallery">
+                     <img id="mainImage" src="${product.images[0]}" alt="${product.title}" class="main-image">
+                     ${product.images.length > 1 ? `
+                       <div class="thumbnail-grid">
+                         ${product.images.map((img, index) => `
+                           <img src="${img}" 
+                                alt="${product.title} ${index + 1}" 
+                                class="thumbnail ${index === 0 ? 'active' : ''}" 
+                                onclick="changeMainImage('${img}', this)"
+                           >
+                         `).join('')}
+                       </div>
+                     ` : ''}
+                   </div>`
+                : '';
+
+            const detailHTML = `
+                <div class="max-w-3xl mx-auto">
+                    <button onclick="showList()" class="btn-secondary mb-6">
+                        ← Kembali ke Daftar
+                    </button>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg p-6 md:p-8">
+                        <div class="mb-4">
+                            <span class="tag">${product.subcategory || product.category}</span>
+                            <span class="tag ml-2">📍 ${product.location}</span>
+                        </div>
+                        
+                        <h1 class="text-3xl font-bold mb-4 text-gray-900">${product.title}</h1>
+                        <div class="price-tag mb-6">${product.price}</div>
+                        
+                        ${imagesHTML}
+                        
+                        <div class="mb-6">
+                            <h2 class="text-xl font-semibold mb-3">Deskripsi</h2>
+                            <p class="text-gray-700 leading-relaxed">${product.description}</p>
+                        </div>
+                        
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                            <h2 class="text-xl font-semibold mb-2">Lokasi</h2>
+                            <p class="text-gray-700">📍 ${product.location}, Kalimantan Selatan</p>
+                        </div>
+                        
+                        <div class="text-center pt-4">
+                            <a href="${getWhatsAppUrl(product.whatsapp, product.title)}" 
+                               target="_blank"
+                               class="btn-primary text-lg px-8 py-4">
+                                💬 Hubungi via WhatsApp
+                            </a>
+                            <p class="text-sm text-gray-500 mt-3">Klik tombol di atas untuk menghubungi penjual</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailView').innerHTML = detailHTML;
+        }
+
+        // ========== NAVIGATION FUNCTIONS ==========
+
+        // Change main image in detail view
+        function changeMainImage(imageSrc, thumbnailElement) {
+            document.getElementById('mainImage').src = imageSrc;
+
+            // Remove active class from all thumbnails
+            document.querySelectorAll('.thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+
+            // Add active class to clicked thumbnail
+            thumbnailElement.classList.add('active');
+        }
+
+        // Show detail page
+        function showDetail(productId) {
+            setUrlParameter('id', productId);
+            document.getElementById('listView').classList.add('hidden');
+            document.getElementById('detailView').classList.remove('hidden');
+            renderDetailView(productId);
+            window.scrollTo(0, 0);
+        }
+
+        // Show list page
+        function showList() {
+            setUrlParameter('id', null);
+            document.getElementById('detailView').classList.add('hidden');
+            document.getElementById('listView').classList.remove('hidden');
+            renderListView();
+            window.scrollTo(0, 0);
+        }
+
+        // ========== INIT ==========
+
+        // Initialize app based on URL
+        function initApp() {
+            const productId = getUrlParameter('id');
+
+            if (productId) {
+                showDetail(productId);
+            } else {
+                showList();
+            }
+        }
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', initApp);
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+
+</html>
