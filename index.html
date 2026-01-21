@@ -12,21 +12,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        /* Custom styles for BaLapak - Light Minimalist Theme */
+        /* Pinterest-Like Component - Light Minimal Theme */
         :root {
             --color-primary: #3B82F6;
-            /* Blue 30% */
+            /* Blue accent */
             --color-text: #1F2937;
-            /* Black 10% */
+            /* Black text */
+            --color-text-secondary: #6B7280;
+            /* Gray text */
             --color-bg: #FFFFFF;
-            /* White 60% */
-            --color-bg-secondary: #F9FAFB;
+            /* White background */
+            --color-bg-page: #FFFFFF;
+            /* White page background */
             --color-border: #E5E7EB;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: var(--color-bg-secondary);
+            background-color: var(--color-bg-page);
             color: var(--color-text);
         }
 
@@ -39,21 +42,45 @@
             border-bottom: 1px solid var(--color-border);
         }
 
-        /* Masonry Grid Layout */
+        .mobile-sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: #FFFFFF;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-sticky-header {
+                position: static;
+                background-color: transparent;
+            }
+        }
+
+        /* Masonry Grid Layout - Responsive with Consistent Gap */
         .masonry-grid {
-            column-count: 1;
-            column-gap: 24px;
+            column-count: 2;
+            column-gap: 16px;
+            /* Consistent gap */
         }
 
         @media (min-width: 640px) {
             .masonry-grid {
                 column-count: 2;
+                column-gap: 16px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .masonry-grid {
+                column-count: 3;
+                column-gap: 16px;
             }
         }
 
         @media (min-width: 1024px) {
             .masonry-grid {
                 column-count: 4;
+                column-gap: 16px;
             }
         }
 
@@ -61,21 +88,23 @@
             background-color: var(--color-bg);
             border-radius: 12px;
             /* Rounded-xl */
-            margin-bottom: 24px;
+            margin-bottom: 16px;
+            /* Match gap */
             break-inside: avoid;
-            transition: all 0.3s ease;
+            transition: box-shadow 0.2s ease;
+            /* Light transition */
             cursor: pointer;
             overflow: hidden;
-            border: 1px solid transparent;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+            /* Soft shadow */
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            /* Shadow increase */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+            /* Shadow increase on hover */
         }
 
         .product-card:hover::after {
@@ -85,7 +114,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.02);
+            background-color: rgba(0, 0, 0, 0.015);
             /* Slight overlay */
             pointer-events: none;
         }
@@ -103,8 +132,11 @@
 
         .product-card-placeholder {
             width: 100%;
-            height: 200px;
-            background-color: var(--color-bg-secondary);
+            min-height: 200px;
+            /* No fixed height */
+            aspect-ratio: 3/4;
+            /* Natural ratio */
+            background-color: #F9FAFB;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -225,19 +257,18 @@
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
 
+        /* Minimal fade-in - no heavy animation */
         .fade-in {
-            animation: fadeIn 0.3s ease-in;
+            animation: fadeIn 0.15s ease-in;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
@@ -261,27 +292,586 @@
         .search-input::placeholder {
             color: #9CA3AF;
         }
+
+        .filter-input {
+            padding: 10px 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--color-text);
+            background-color: white;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .filter-select {
+            padding: 10px 16px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--color-text);
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .filter-pill {
+            padding: 8px 16px;
+            border-radius: 50px;
+            border: 1px solid var(--color-border);
+            background-color: white;
+            color: var(--color-text);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .filter-pill:hover {
+            border-color: var(--color-primary);
+        }
+
+        .filter-pill.active {
+            background-color: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .filter-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .filter-container {
+                flex-wrap: wrap;
+                overflow-x: visible;
+            }
+        }
+
+        /* Filter Modal / Bottom Sheet */
+        .filter-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .filter-backdrop.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .filter-modal {
+            position: fixed;
+            background-color: white;
+            z-index: 101;
+            transition: transform 0.3s ease;
+        }
+
+        /* Mobile: Bottom Sheet */
+        @media (max-width: 767px) {
+            .filter-modal {
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-height: 80vh;
+                border-radius: 20px 20px 0 0;
+                transform: translateY(100%);
+            }
+
+            .filter-modal.active {
+                transform: translateY(0);
+            }
+        }
+
+        /* Desktop: Side Panel */
+        @media (min-width: 768px) {
+            .filter-modal {
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 400px;
+                transform: translateX(100%);
+            }
+
+            .filter-modal.active {
+                transform: translateX(0);
+            }
+        }
+
+        .filter-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-modal-content {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 140px);
+        }
+
+        @media (min-width: 768px) {
+            .filter-modal-content {
+                max-height: calc(100vh - 140px);
+            }
+        }
+
+        .filter-modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--color-border);
+            display: flex;
+            gap: 12px;
+        }
+
+        .filter-section {
+            margin-bottom: 24px;
+        }
+
+        .filter-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 12px;
+        }
+
+        .filter-option {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            background-color: white;
+            color: var(--color-text);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        .filter-option:hover {
+            border-color: var(--color-primary);
+        }
+
+        .filter-option.active {
+            background-color: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .filter-price-inputs {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filter-price-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .filter-price-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .filter-checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-checkbox-item:hover {
+            border-color: var(--color-primary);
+            background-color: #F9FAFB;
+        }
+
+        .filter-checkbox-item.active {
+            border-color: var(--color-primary);
+            background-color: #EFF6FF;
+        }
+
+        .filter-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: var(--color-primary);
+        }
+
+        .filter-error {
+            color: #EF4444;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .btn-filter {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            background-color: white;
+            color: var(--color-text);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-filter:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .btn-reset {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            background-color: white;
+            color: var(--color-text);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-apply {
+            flex: 2;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--color-primary);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-apply:hover {
+            background-color: #2563EB;
+        }
+
+        .btn-filter-icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            background-color: white;
+            color: var(--color-text);
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-filter-icon:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .search-filter-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filter-chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background-color: #F3F4F6;
+            color: var(--color-text);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .filter-chip-close {
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            color: #6B7280;
+            transition: color 0.2s ease;
+        }
+
+        .filter-chip-close:hover {
+            color: var(--color-text);
+        }
+
+        .filter-chip-reset {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background-color: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip-reset:hover {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        /* Featured Section */
+        .featured-section {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 16px 0;
+        }
+
+        .featured-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .featured-hero {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .featured-hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .featured-hero-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background-color: var(--color-primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+
+        .featured-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            padding: 24px 16px 16px;
+        }
+
+        .featured-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .featured-title {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .featured-location {
+            font-size: 13px;
+            color: #d1d5db;
+            margin-bottom: 12px;
+        }
+
+        .featured-cta {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .featured-cta:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .featured-thumbnails {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            padding-bottom: 8px;
+        }
+
+        .featured-thumbnails::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .featured-thumbnails::-webkit-scrollbar-track {
+            background: #2a2a2a;
+            border-radius: 3px;
+        }
+
+        .featured-thumbnails::-webkit-scrollbar-thumb {
+            background: #4a4a4a;
+            border-radius: 3px;
+        }
+
+        .featured-thumbnail {
+            flex-shrink: 0;
+            width: 120px;
+            height: 68px;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .featured-thumbnail:hover {
+            opacity: 0.8;
+        }
+
+        .featured-thumbnail.active {
+            border-color: var(--color-primary);
+            opacity: 1;
+        }
+
+        .featured-thumbnail-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-thumbnail-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Sticky Navbar -->
-    <nav class="navbar-sticky">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <img src="logo&fav.png" alt="BaLapak Logo" class="h-12 w-auto">
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-900">BaLapak</h1>
-                        <p class="text-sm text-gray-600">Lapak Lokal Urang Banua</p>
+    <!-- Mobile Sticky Header -->
+    <div class="mobile-sticky-header">
+        <!-- Sticky Navbar -->
+        <nav class="navbar-sticky">
+            <div class="max-w-7xl mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <img src="logo&fav.png" alt="BaLapak Logo" class="h-12 w-auto">
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">BaLapak</h1>
+                            <p class="text-sm text-gray-600">Lapak Lokal Urang Banua</p>
+                        </div>
+                    </div>
+                    <div id="categoryFilterNav" class="hidden md:flex gap-2">
+                        <!-- Filters will be injected here -->
                     </div>
                 </div>
-                <div id="categoryFilterNav" class="hidden md:flex gap-2">
-                    <!-- Filters will be injected here -->
-                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Sticky Search (visible only in list view) -->
+        <div id="mobileSearch" class="md:hidden bg-white px-4 pb-4">
+            <div class="search-filter-container">
+                <input type="text" id="searchInputMobile" class="search-input"
+                    placeholder="🔍 Cari produk, lokasi, atau kategori..." oninput="handleSearch()">
+                <button class="btn-filter-icon" onclick="openFilterModal()">
+                    <span>☰</span>
+                </button>
             </div>
         </div>
-    </nav>
+    </div>
+
+    <!-- Featured Products Section -->
+    <div id="featuredSection" class="featured-section" style="display: none;">
+        <div class="featured-container">
+            <div class="featured-hero" id="featuredHero" onclick="goToFeaturedDetail()">
+                <!-- Featured hero will be injected -->
+            </div>
+            <div class="featured-thumbnails" id="featuredThumbnails">
+                <!-- Featured thumbnails will be injected -->
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 py-8">
@@ -294,10 +884,19 @@
                 </div>
             </div>
 
-            <!-- Search Bar -->
-            <div class="mb-6">
-                <input type="text" id="searchInput" class="search-input"
-                    placeholder="🔍 Cari produk, lokasi, atau kategori..." oninput="handleSearch()">
+            <!-- Search Bar + Filter (Desktop) -->
+            <div class="hidden md:block mb-6">
+                <div class="search-filter-container">
+                    <input type="text" id="searchInput" class="search-input"
+                        placeholder="🔍 Cari produk, lokasi, atau kategori..." oninput="handleSearch()">
+                    <button class="btn-filter-icon" onclick="openFilterModal()">
+                        <span>☰</span>
+                    </button>
+                </div>
+                <!-- Filter Chips -->
+                <div id="filterChips" class="filter-chips-container">
+                    <!-- Active filter chips will be injected here -->
+                </div>
             </div>
 
             <!-- Products Grid -->
@@ -312,6 +911,38 @@
         </div>
     </main>
 
+    <!-- Filter Modal / Bottom Sheet -->
+    <div class="filter-backdrop" id="filterBackdrop" onclick="closeFilterModal()"></div>
+    <div class="filter-modal" id="filterModal">
+        <div class="filter-modal-header">
+            <h2 class="text-lg font-bold">Filter Produk</h2>
+            <button onclick="closeFilterModal()" class="text-2xl text-gray-400 hover:text-gray-600">&times;</button>
+        </div>
+        <div class="filter-modal-content">
+            <!-- Price Filter Section -->
+            <div class="filter-section">
+                <div class="filter-section-title">Harga</div>
+                <div class="filter-price-inputs">
+                    <input type="number" id="tempMinPrice" class="filter-price-input" placeholder="Harga Min">
+                    <span>-</span>
+                    <input type="number" id="tempMaxPrice" class="filter-price-input" placeholder="Harga Max">
+                </div>
+                <div id="priceError" class="filter-error" style="display: none;"></div>
+            </div>
+            <!-- City Filter Section -->
+            <div class="filter-section">
+                <div class="filter-section-title">Kota</div>
+                <div id="tempCityOptions">
+                    <!-- City checkboxes will be injected -->
+                </div>
+            </div>
+        </div>
+        <div class="filter-modal-footer">
+            <button class="btn-reset" onclick="resetTempFilters()">Reset</button>
+            <button class="btn-apply" onclick="applyFilters()">Terapkan</button>
+        </div>
+    </div>
+
     <script>
         // ========== PRODUCT DATA ==========
         const PRODUCTS = [
@@ -325,6 +956,7 @@
                 location: "Kabupaten Balangan",
                 description: "Motor Honda Beat tahun 2018, warna hitam, kondisi mulus terawat. Surat lengkap STNK BPKB. Mesin halus, tidak ada PR. Pajak hidup. Cocok untuk harian.",
                 whatsapp: "6285123456789",
+                featured: true,
                 images: [
                     "/home/asyjim/.gemini/antigravity/brain/9f21aac4-5ed3-4dae-a48d-5fe345994e3d/motor_demo_1_1768368969708.png",
                     "/home/asyjim/.gemini/antigravity/brain/9f21aac4-5ed3-4dae-a48d-5fe345994e3d/motor_demo_2_1768369030206.png",
@@ -608,6 +1240,168 @@
             return categories;
         }
 
+        // Get unique cities
+        function getCities() {
+            const cities = [...new Set(PRODUCTS.map(p => p.location))].sort();
+            return cities;
+        }
+
+        // Price range definitions
+        const PRICE_RANGES = [
+            { id: 'under1m', label: '< 1 jt', min: 0, max: 1000000 },
+            { id: '1to3m', label: '1-3 jt', min: 1000000, max: 3000000 },
+            { id: '3to5m', label: '3-5 jt', min: 3000000, max: 5000000 },
+            { id: 'over5m', label: '> 5 jt', min: 5000000, max: Infinity }
+        ];
+
+        // Active filters state
+        let activeFilters = {
+            minPrice: null,
+            maxPrice: null,
+            cities: []
+        };
+
+        // Temporary filters (while modal is open)
+        let tempFilters = {
+            minPrice: null,
+            maxPrice: null,
+            cities: []
+        };
+
+        // Open filter modal
+        function openFilterModal() {
+            // Copy active filters to temp
+            tempFilters.minPrice = activeFilters.minPrice;
+            tempFilters.maxPrice = activeFilters.maxPrice;
+            tempFilters.cities = [...activeFilters.cities];
+
+            // Render filter options
+            renderTempFilterOptions();
+
+            // Show modal
+            document.getElementById('filterBackdrop').classList.add('active');
+            document.getElementById('filterModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close filter modal
+        function closeFilterModal() {
+            document.getElementById('filterBackdrop').classList.remove('active');
+            document.getElementById('filterModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Render temp filter options
+        function renderTempFilterOptions() {
+            // Set price inputs
+            const minPriceInput = document.getElementById('tempMinPrice');
+            const maxPriceInput = document.getElementById('tempMaxPrice');
+            if (minPriceInput) minPriceInput.value = tempFilters.minPrice || '';
+            if (maxPriceInput) maxPriceInput.value = tempFilters.maxPrice || '';
+
+            // Hide error
+            const priceError = document.getElementById('priceError');
+            if (priceError) priceError.style.display = 'none';
+
+            // Render city checkboxes
+            const cities = getCities();
+            const cityContainer = document.getElementById('tempCityOptions');
+            if (cityContainer) {
+                const cityHTML = cities.map(city => {
+                    const isChecked = tempFilters.cities.includes(city);
+                    const activeClass = isChecked ? 'active' : '';
+                    return `
+                        <label class="filter-checkbox-item ${activeClass}" onclick="toggleTempCity('${city}')">
+                            <input type="checkbox" class="filter-checkbox" ${isChecked ? 'checked' : ''} onchange="event.stopPropagation(); toggleTempCity('${city}')">
+                            <span>${city}</span>
+                        </label>
+                    `;
+                }).join('');
+                cityContainer.innerHTML = cityHTML;
+            }
+        }
+
+        // Toggle temp city filter
+        function toggleTempCity(city) {
+            const index = tempFilters.cities.indexOf(city);
+            if (index > -1) {
+                tempFilters.cities.splice(index, 1);
+            } else {
+                tempFilters.cities.push(city);
+            }
+            renderTempFilterOptions();
+        }
+
+        // Reset temp filters
+        function resetTempFilters() {
+            tempFilters.minPrice = null;
+            tempFilters.maxPrice = null;
+            tempFilters.cities = [];
+            renderTempFilterOptions();
+        }
+
+        // Validate price inputs
+        function validatePriceInputs() {
+            const minPriceInput = document.getElementById('tempMinPrice');
+            const maxPriceInput = document.getElementById('tempMaxPrice');
+            const priceError = document.getElementById('priceError');
+
+            const minPrice = minPriceInput ? parseInt(minPriceInput.value) : null;
+            const maxPrice = maxPriceInput ? parseInt(maxPriceInput.value) : null;
+
+            if (minPrice && maxPrice && minPrice > maxPrice) {
+                if (priceError) {
+                    priceError.textContent = 'Harga minimum tidak boleh lebih besar dari harga maksimum';
+                    priceError.style.display = 'block';
+                }
+                return false;
+            }
+
+            if (priceError) {
+                priceError.style.display = 'none';
+            }
+            return true;
+        }
+
+        // Apply filters
+        function applyFilters() {
+            // Validate price inputs
+            if (!validatePriceInputs()) {
+                return;
+            }
+
+            // Get price values from inputs
+            const minPriceInput = document.getElementById('tempMinPrice');
+            const maxPriceInput = document.getElementById('tempMaxPrice');
+
+            activeFilters.minPrice = minPriceInput && minPriceInput.value ? parseInt(minPriceInput.value) : null;
+            activeFilters.maxPrice = maxPriceInput && maxPriceInput.value ? parseInt(maxPriceInput.value) : null;
+            activeFilters.cities = [...tempFilters.cities];
+
+            closeFilterModal();
+            renderListView();
+        }
+
+        // Render price filter buttons (deprecated)
+        function renderPriceFilterButtons() {
+            // No longer needed with modal-based filters
+        }
+
+        // Render city filter buttons (deprecated)
+        function renderCityFilterButtons() {
+            // No longer needed with modal-based filters
+        }
+
+        // Toggle price filter (deprecated)
+        function togglePriceFilter(rangeId) {
+            // No longer needed with modal-based filters
+        }
+
+        // Toggle city filter (deprecated)
+        function toggleCityFilter(city) {
+            // No longer needed with modal-based filters
+        }
+
         // ========== RENDER FUNCTIONS ==========
 
         // Render category filters
@@ -635,13 +1429,136 @@
 
         // Handle search input
         function handleSearch() {
+            // Auto-reset filters when user starts typing
+            const searchInput = document.getElementById('searchInput');
+            const searchInputMobile = document.getElementById('searchInputMobile');
+            const searchQuery = searchInput?.value || searchInputMobile?.value || '';
+
+            if (searchQuery.trim()) {
+                // Reset all filters if user is searching
+                if (activeFilters.minPrice || activeFilters.maxPrice || activeFilters.cities.length > 0) {
+                    activeFilters.minPrice = null;
+                    activeFilters.maxPrice = null;
+                    activeFilters.cities = [];
+                }
+            }
+
             renderListView();
+        }
+
+        // Render filter chips
+        function renderFilterChips() {
+            const container = document.getElementById('filterChips');
+            if (!container) return;
+
+            const chips = [];
+
+            // Price filter chip
+            if (activeFilters.minPrice || activeFilters.maxPrice) {
+                let priceLabel = 'Harga: ';
+                if (activeFilters.minPrice && activeFilters.maxPrice) {
+                    priceLabel += `Rp ${activeFilters.minPrice.toLocaleString()} - Rp ${activeFilters.maxPrice.toLocaleString()}`;
+                } else if (activeFilters.minPrice) {
+                    priceLabel += `> Rp ${activeFilters.minPrice.toLocaleString()}`;
+                } else {
+                    priceLabel += `< Rp ${activeFilters.maxPrice.toLocaleString()}`;
+                }
+                chips.push(`
+                    <div class="filter-chip">
+                        <span>${priceLabel}</span>
+                        <span class="filter-chip-close" onclick="removePriceFilter()">\u00d7</span>
+                    </div>
+                `);
+            }
+
+            // City filter chips
+            activeFilters.cities.forEach(city => {
+                chips.push(`
+                    <div class="filter-chip">
+                        <span>${city}</span>
+                        <span class="filter-chip-close" onclick="removeCityFilter('${city}')">\u00d7</span>
+                    </div>
+                `);
+            });
+
+            // Reset all button
+            if (chips.length > 1) {
+                chips.push(`
+                    <button class="filter-chip-reset" onclick="resetAllFilters()">
+                        Reset Semua
+                    </button>
+                `);
+            }
+
+            container.innerHTML = chips.join('');
+        }
+
+        // Remove price filter
+        function removePriceFilter() {
+            activeFilters.minPrice = null;
+            activeFilters.maxPrice = null;
+            renderListView();
+        }
+
+        // Remove city filter
+        function removeCityFilter(city) {
+            const index = activeFilters.cities.indexOf(city);
+            if (index > -1) {
+                activeFilters.cities.splice(index, 1);
+            }
+            renderListView();
+        }
+
+        // Reset all filters
+        function resetAllFilters() {
+            activeFilters.minPrice = null;
+            activeFilters.maxPrice = null;
+            activeFilters.cities = [];
+            renderListView();
+        }
+
+        // Get price filters
+        function getPriceFilters() {
+            return {
+                min: activeFilters.minPrice || 0,
+                max: activeFilters.maxPrice || Infinity
+            };
+        }
+
+        // Get city filter
+        function getCityFilter() {
+            return activeFilters.cities;
+        }
+
+        // Extract numeric price from price string
+        function extractPrice(priceStr) {
+            const match = priceStr.replace(/[^0-9]/g, '');
+            return parseInt(match) || 0;
+        }
+
+        // Filter products by price
+        function filterProductsByPrice(products, minPrice, maxPrice) {
+            if (minPrice === 0 && maxPrice === Infinity) return products;
+
+            return products.filter(product => {
+                const price = extractPrice(product.price);
+                return price >= minPrice && price <= maxPrice;
+            });
+        }
+
+        // Filter products by city
+        function filterProductsByCity(products, cities) {
+            if (!cities || cities.length === 0) return products;
+            return products.filter(product => cities.includes(product.location));
         }
 
         // Get search query
         function getSearchQuery() {
             const searchInput = document.getElementById('searchInput');
-            return searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const searchInputMobile = document.getElementById('searchInputMobile');
+            const desktopValue = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const mobileValue = searchInputMobile ? searchInputMobile.value.toLowerCase().trim() : '';
+            return desktopValue || mobileValue;
         }
 
         // Filter products by search query
@@ -665,12 +1582,8 @@
                 <div class="product-card" onclick="showDetail('${product.id}')">
                     ${imageHTML}
                     <div class="product-card-content">
-                        <h3 class="text-base font-bold mb-1 text-gray-900 leading-tight">${product.title}</h3>
-                        <p class="text-gray-500 text-xs mb-3 line-clamp-1">${product.description}</p>
-                        <div class="flex items-center justify-between mt-auto">
-                            <div class="price-tag">${product.price}</div>
-                            <span class="tag text-[10px]">${product.location}</span>
-                        </div>
+                        <div class="price-tag">${product.price}</div>
+                        <h3 class="text-sm font-semibold mt-2 text-gray-900 leading-tight line-clamp-2">${product.title}</h3>
                     </div>
                 </div>
             `;
@@ -680,12 +1593,16 @@
         function renderListView() {
             const currentCategory = getUrlParameter('category') || 'semua';
             const searchQuery = getSearchQuery();
+            const priceFilters = getPriceFilters();
+            const cityFilter = getCityFilter();
 
             let filteredProducts = currentCategory === 'semua'
                 ? PRODUCTS
                 : PRODUCTS.filter(p => p.category === currentCategory);
 
             filteredProducts = filterProductsBySearch(filteredProducts, searchQuery);
+            filteredProducts = filterProductsByPrice(filteredProducts, priceFilters.min, priceFilters.max);
+            filteredProducts = filterProductsByCity(filteredProducts, cityFilter);
 
             const productsHTML = filteredProducts.length > 0
                 ? filteredProducts.map(renderProductCard).join('')
@@ -694,6 +1611,7 @@
             document.getElementById('productsGrid').innerHTML = productsHTML;
 
             renderCategoryFilters();
+            renderFilterChips();
         }
 
         // Render detail view
@@ -802,6 +1720,98 @@
             window.scrollTo(0, 0);
         }
 
+        // ========== FEATURED SECTION ==========
+
+        let featuredProducts = [];
+        let currentFeaturedIndex = 0;
+
+        // Get featured products
+        function getFeaturedProducts() {
+            return PRODUCTS.filter(p => p.featured && p.images && p.images.length > 0).slice(0, 8);
+        }
+
+        // Render featured section
+        function renderFeaturedSection() {
+            featuredProducts = getFeaturedProducts();
+
+            const section = document.getElementById('featuredSection');
+            if (!section) return;
+
+            if (featuredProducts.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            currentFeaturedIndex = 0;
+            renderFeaturedHero();
+            renderFeaturedThumbnails();
+        }
+
+        // Render featured hero
+        function renderFeaturedHero() {
+            const hero = document.getElementById('featuredHero');
+            if (!hero || featuredProducts.length === 0) return;
+
+            const product = featuredProducts[currentFeaturedIndex];
+            const hasImage = product.images && product.images.length > 0;
+            const imageHTML = hasImage
+                ? `<img src="${product.images[0]}" alt="${product.title}" class="featured-hero-image" loading="lazy">`
+                : `<div class="featured-hero-placeholder">📦</div>`;
+
+            hero.innerHTML = `
+                ${imageHTML}
+                <div class="featured-badge">Rekomendasi</div>
+                <div class="featured-overlay">
+                    <div class="featured-price">${product.price}</div>
+                    <div class="featured-title">${product.title}</div>
+                    <div class="featured-location">📍 ${product.location}</div>
+                    <a href="${getWhatsAppUrl(product.whatsapp, product.title)}" target="_blank" class="featured-cta" onclick="event.stopPropagation()">
+                        💬 Hubungi Penjual
+                    </a>
+                </div>
+            `;
+        }
+
+        // Render featured thumbnails
+        function renderFeaturedThumbnails() {
+            const container = document.getElementById('featuredThumbnails');
+            if (!container || featuredProducts.length === 0) return;
+
+            const thumbnailsHTML = featuredProducts.map((product, index) => {
+                const hasImage = product.images && product.images.length > 0;
+                const imageHTML = hasImage
+                    ? `<img src="${product.images[0]}" alt="${product.title}" class="featured-thumbnail-image" loading="lazy">`
+                    : `<div class="featured-thumbnail-placeholder">📦</div>`;
+                const activeClass = index === currentFeaturedIndex ? 'active' : '';
+
+                return `
+                    <div class="featured-thumbnail ${activeClass}" onclick="setFeaturedIndex(${index})">
+                        ${imageHTML}
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = thumbnailsHTML;
+        }
+
+        // Set featured index
+        function setFeaturedIndex(index) {
+            if (index >= 0 && index < featuredProducts.length) {
+                currentFeaturedIndex = index;
+                renderFeaturedHero();
+                renderFeaturedThumbnails();
+            }
+        }
+
+        // Go to featured detail
+        function goToFeaturedDetail() {
+            if (featuredProducts.length > 0) {
+                const product = featuredProducts[currentFeaturedIndex];
+                showDetail(product.id);
+            }
+        }
+
         // ========== INIT ==========
 
         // Initialize app based on URL
@@ -812,6 +1822,11 @@
                 showDetail(productId);
             } else {
                 showList();
+            }
+
+            // Render featured section only in list view
+            if (!productId) {
+                renderFeaturedSection();
             }
         }
 
